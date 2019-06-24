@@ -20,6 +20,8 @@ require $blogpath . 'zb_system/admin/admin_top.php';
 <div id="divMain">
   <div class="divHeader"><?php echo $blogtitle; ?></div>
   <div class="SubMenu">
+    <a href="main.php" title="首页"><span class="m-left m-now">首页</span></a>
+    <?php require_once "about.php"; ?>
   </div>
   <div id="divMain2">
     <p>本插件初衷为不修改主题或其他插件的前提下实现对当前站点的部分自定义需求，比如插入CSS，js或者挂载接口；</p>
