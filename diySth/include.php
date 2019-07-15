@@ -8,7 +8,7 @@ if (is_file($diySth_FuncFile)) {
 function ActivePlugin_diySth()
 {
   Add_Filter_Plugin('Filter_Plugin_Zbp_BuildTemplate', 'diySth_BuildTemp');
-  Add_Filter_Plugin('Filter_Plugin_Admin_Header', 'InstallPlugin_diySth');
+  // Add_Filter_Plugin('Filter_Plugin_Admin_Header', 'InstallPlugin_diySth');
   if (function_exists("diy_Add_Filter_Plugin")) {
     diy_Add_Filter_Plugin();
   }
@@ -32,6 +32,9 @@ function diySth_Gen($dir)
 php;
   $subDirs = GetDirsInDir($dir);
   foreach ($subDirs as $i => $name) {
+    if ($name === "doc") {
+      continue;
+    }
     $path = "{$dir}{$name}/";
     foreach (array("php", "js", "css") as $ext) {
       $file = "{$path}{$name}.{$ext}";
@@ -108,6 +111,11 @@ function InstallPlugin_diySth()
   if (!is_dir($dir)) {
     @mkdir($dir, 0755);
     copy(diySth_Path("v-fun"), diySth_Path("u-fun"));
+  }
+  if (!$zbp->HasConfig('diySth')) {
+    $zbp->Config('diySth')->version = 1.1;
+    // $zbp->Config('diySth')->value= "";
+    $zbp->SaveConfig('diySth');
   }
   $filesList = array("css", "js");
   foreach ($filesList as $value) {
