@@ -31,11 +31,15 @@ function diySth_Gen($dir)
 // -name-_Function
 php;
   $subDirs = GetDirsInDir($dir);
-  foreach ($subDirs as $i => $name) {
-    if ($name === "doc") {
+  $n = 0;
+  foreach ($subDirs as  $name) {
+    if ($name === "doc" || $name === ".git") {
       continue;
     }
     $path = "{$dir}{$name}/";
+    if (is_file("{$path}{$name}.close")) {
+      continue;
+    }
     foreach (array("php", "js", "css") as $ext) {
       $file = "{$path}{$name}.{$ext}";
       if (!is_file($file)) {
@@ -44,8 +48,9 @@ php;
           file_put_contents($file, str_replace("-name-", $name, $php));
         }
       }
-      diySth_Build($file, $ext, $i);
+      diySth_Build($file, $ext, $n);
     }
+    $n++;
   }
 }
 function diySth_Build($file, $ext, $i)

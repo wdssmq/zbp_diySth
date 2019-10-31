@@ -29,7 +29,7 @@ require $blogpath . 'zb_system/admin/admin_top.php';
     <p>-----</p>
     <h3>模块化方案：</h3>
     <p>1、按路径创建<strong>空文件夹</strong>：/zb_users/plugin/diySth/usr/<strong>floderName</strong>/，floderName可自定义；<span style="color: #6a9955;font-weight: 800;">// 订制用户将收到的文件夹放在这里</span></p>
-    <p>2、按路径创建<strong>空文件</strong>：/zb_users/plugin/diySth/usr/lock.ini；</p>
+    <p>2、按路径创建<strong>空文件</strong>：/zb_users/plugin/diySth/usr/lock.ini；（旧版用户不确定不要操作）</p>
     <p>3、回到本页<a title="刷新" href="main.php">刷新</a>；</p>
     <p>4、文件夹内会生成初始的js,css,php三个文件，在其中写入各自功能的实现；<span style="color: #6a9955;font-weight: 800;">// 订制用户可跳过或自行调整收到的文件</span></p>
     <p>5、再次回到本页<a title="刷新" href="main.php">刷新</a>，各模块的内容会被合并到下边文件中供系统实际调用；</p>
