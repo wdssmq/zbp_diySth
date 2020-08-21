@@ -1,7 +1,7 @@
 <?php
 #注册插件
 RegisterPlugin("diySth", "ActivePlugin_diySth");
-$diySth_FuncFile = __DIR__ . "/usr/function.php";
+$diySth_FuncFile = __DIR__ . "/bin/function.php";
 if (is_file($diySth_FuncFile)) {
   require $diySth_FuncFile;
 }
@@ -15,9 +15,10 @@ function ActivePlugin_diySth()
 }
 function diySth_BuildTemp(&$templates)
 {
-  $templates['header'] = str_replace('{$header}', '{$header}  	<link rel="stylesheet" href="' . diySth_Path("u-css", "host") . '" media="screen" />', $templates['header']);
-  $templates['footer'] = str_replace('{$footer}', '{$footer}<script src="' . diySth_Path("u-js", "host") . '"></script>', $templates['footer']);
+  $templates['header'] = str_replace('{$header}', '{$header}  	<link rel="stylesheet" href="' . diySth_Path("b-css", "host") . '?v=2020-08-21" media="screen" />', $templates['header']);
+  $templates['footer'] = str_replace('{$footer}', '{$footer}<script src="' . diySth_Path("b-js", "host") . '?v=2020-08-21"></script>', $templates['footer']);
 }
+// 遍历usr文件夹并生成内容
 function diySth_Gen($dir)
 {
   global $zbp;
@@ -40,7 +41,7 @@ php;
     if (is_file("{$path}{$name}.close")) {
       continue;
     }
-    foreach (array("php", "js", "css") as $ext) {
+    foreach (array("php", "js", "css", "md") as $ext) {
       $file = "{$path}{$name}.{$ext}";
       if (!is_file($file)) {
         file_put_contents($file, "/* {$name} */");
@@ -48,21 +49,27 @@ php;
           file_put_contents($file, str_replace("-name-", $name, $php));
         }
       }
-      diySth_Build($file, $ext, $n);
+      if ($ext !== "md")
+        diySth_Build($file, $ext, $n);
     }
     $n++;
   }
+  // $zbp->SetHint("good", "操作成功[diySth]");
 }
 function diySth_Build($file, $ext, $i)
 {
+  global $zbp;
   $lock = diySth_Path("usr/lock.ini");
   if (!is_file($lock)) {
+    $main = diySth_Path("main", "host");
+    if ($ext === "php")
+      $zbp->SetHint('tips', "未设置lock.ini文件" . diySth_a($main, "点击查看说明", "点击查看说明"));
     return;
   }
   if ($ext === "php") {
-    $rltFile = diySth_Path("u-fun");
+    $rltFile = diySth_Path("b-fun");
   } else {
-    $rltFile = diySth_Path("u-{$ext}");
+    $rltFile = diySth_Path("b-{$ext}");
   }
   if ($i === 0) {
     $contents = $ext === "php" ? file_get_contents(diySth_Path("v-fun")) : "";
@@ -79,22 +86,32 @@ function diySth_Build($file, $ext, $i)
   }
   file_put_contents($rltFile, $contents);
 }
+function diySth_a($href, $title, $text = "")
+{
+  if (empty($text)) {
+    $text = $href;
+  }
+  return "<a href=\"{$href}\" title=\"{$title}\">$text</a>";
+}
 function diySth_Path($file, $t = 'path')
 {
   global $zbp;
   $result = $zbp->$t . 'zb_users/plugin/diySth/';
   switch ($file) {
-    case 'u-js':
-      return $result . 'usr/script.js';
+    case 'b-js':
+      return $result . 'bin/script.js';
       break;
-    case 'u-css':
-      return $result . 'usr/style.css';
+    case 'b-css':
+      return $result . 'bin/style.css';
       break;
-    case 'u-fun':
-      return $result . 'usr/function.php';
+    case 'b-fun':
+      return $result . 'bin/function.php';
       break;
     case 'v-fun':
       return $result . 'var/function.php';
+      break;
+    case 'bin':
+      return $result . 'bin/';
       break;
     case 'usr':
       return $result . 'usr/';
@@ -112,10 +129,14 @@ function diySth_Path($file, $t = 'path')
 function InstallPlugin_diySth()
 {
   global $zbp;
+  $dir = diySth_Path("bin");
+  if (!is_dir($dir)) {
+    @mkdir($dir, 0755);
+    copy(diySth_Path("v-fun"), diySth_Path("b-fun"));
+  }
   $dir = diySth_Path("usr");
   if (!is_dir($dir)) {
     @mkdir($dir, 0755);
-    copy(diySth_Path("v-fun"), diySth_Path("u-fun"));
   }
   if (!$zbp->HasConfig('diySth')) {
     $zbp->Config('diySth')->version = 1.1;
@@ -124,7 +145,7 @@ function InstallPlugin_diySth()
   }
   $filesList = array("css", "js");
   foreach ($filesList as $value) {
-    $uFile = diySth_Path("u-{$value}");
+    $uFile = diySth_Path("b-{$value}");
     if (!is_file($uFile)) {
       file_put_contents($uFile, "");
     }
@@ -133,4 +154,5 @@ function InstallPlugin_diySth()
   $zbp->BuildTemplate();
 }
 function UninstallPlugin_diySth()
-{ }
+{
+}
