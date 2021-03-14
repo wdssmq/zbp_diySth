@@ -15,8 +15,8 @@ function ActivePlugin_diySth()
 }
 function diySth_BuildTemp(&$templates)
 {
-  $templates['header'] = str_replace('{$header}', '{$header}  	<link rel="stylesheet" href="' . diySth_Path("b-css", "host") . '?v=2020-08-21" media="screen" />', $templates['header']);
-  $templates['footer'] = str_replace('{$footer}', '{$footer}<script src="' . diySth_Path("b-js", "host") . '?v=2020-08-21"></script>', $templates['footer']);
+  $templates['header'] = str_replace('{$header}', '{$header}  	<link rel="stylesheet" href="' . diySth_Path("b-css", "host") . '?v=2021-03-14" media="screen" />', $templates['header']);
+  $templates['footer'] = str_replace('{$footer}', '{$footer}<script src="' . diySth_Path("b-js", "host") . '?v=2021-03-14"></script>', $templates['footer']);
 }
 // 遍历usr文件夹并生成内容
 function diySth_Gen($dir)
