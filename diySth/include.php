@@ -15,8 +15,8 @@ function ActivePlugin_diySth()
 }
 function diySth_BuildTemp(&$templates)
 {
-  $templates['header'] = str_replace('{$header}', '{$header}  	<link rel="stylesheet" href="' . diySth_Path("b-css", "host") . '?v=2021-03-14" media="screen" />', $templates['header']);
-  $templates['footer'] = str_replace('{$footer}', '{$footer}<script src="' . diySth_Path("b-js", "host") . '?v=2021-03-14"></script>', $templates['footer']);
+  $templates['header'] = str_replace('{$header}', '{$header}  	<link rel="stylesheet" href="' . diySth_Path("b-css", "host") . '?v=2021100610" media="screen" />', $templates['header']);
+  $templates['footer'] = str_replace('{$footer}', '{$footer}<script src="' . diySth_Path("b-js", "host") . '?v=2021100610"></script>', $templates['footer']);
 }
 // 遍历usr文件夹并生成内容
 function diySth_Gen($dir)
@@ -58,12 +58,9 @@ php;
 }
 function diySth_Build($file, $ext, $i)
 {
-  global $zbp;
+  // 2021-10-06
   $lock = diySth_Path("usr/lock.ini");
   if (!is_file($lock)) {
-    $main = diySth_Path("main", "host");
-    if ($ext === "php")
-      $zbp->SetHint('tips', "未设置lock.ini文件" . diySth_a($main, "点击查看说明", "点击查看说明"));
     return;
   }
   if ($ext === "php") {
@@ -77,9 +74,9 @@ function diySth_Build($file, $ext, $i)
     $contents = file_get_contents($rltFile);
   }
   if ($ext === "php") {
-    $arryPHP = explode("\n// ----\n", file_get_contents($file));
-    $contents = str_replace("// diy_Add_Filter", "// diy_Add_Filter\n" . $arryPHP[1], $contents);
-    $contents = str_replace("// diy_Add_Function", "// diy_Add_Function\n" . $arryPHP[2], $contents);
+    $arrPHP = explode("\n// ----\n", file_get_contents($file));
+    $contents = str_replace("// diy_Add_Filter", "// diy_Add_Filter\n" . $arrPHP[1], $contents);
+    $contents = str_replace("// diy_Add_Function", "// diy_Add_Function\n" . $arrPHP[2], $contents);
   } else {
     $contents .= file_get_contents($file);
     $contents .= "\n";
@@ -139,8 +136,10 @@ function InstallPlugin_diySth()
     @mkdir($dir, 0755);
   }
   if (!$zbp->HasConfig('diySth')) {
+    file_put_contents(diySth_Path("usr/lock.ini"), "");
+  }
+  if (!$zbp->HasConfig('diySth')) {
     $zbp->Config('diySth')->version = 1.1;
-    // $zbp->Config('diySth')->value= "";
     $zbp->SaveConfig('diySth');
   }
   $filesList = array("css", "js");
