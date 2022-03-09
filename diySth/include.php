@@ -18,8 +18,8 @@ function diySth_BuildTemp(&$templates)
   $templates['header'] = str_replace('{$header}', '{$header}  	<link rel="stylesheet" href="' . diySth_Path("b-css", "host") . '?v=2021100610" media="screen" />', $templates['header']);
   $templates['footer'] = str_replace('{$footer}', '{$footer}<script src="' . diySth_Path("b-js", "host") . '?v=2021100610"></script>', $templates['footer']);
 }
-// 遍历usr文件夹并生成内容
-function diySth_Gen($dir)
+// 遍历 usr 文件夹并生成内容
+function diySth_Gen()
 {
   global $zbp;
   $php = <<<php
@@ -31,27 +31,35 @@ function diySth_Gen($dir)
 // ----
 // -name-_Function
 php;
+  $dir = diySth_Path("usr");
   $subDirs = GetDirsInDir($dir);
+  // 用于判断循环子级调用 diySth_Build() 是否首次执行
   $n = 0;
   foreach ($subDirs as  $name) {
     if ($name === "doc" || $name === ".git") {
       continue;
     }
+    // diySth/usr/autoLoad/
     $path = "{$dir}{$name}/";
+    // diySth/usr/autoLoad/autoLoad.close
     if (is_file("{$path}{$name}.close")) {
       continue;
     }
     foreach (array("php", "js", "css", "md") as $ext) {
       $file = "{$path}{$name}.{$ext}";
       if (!is_file($file)) {
-        file_put_contents($file, "/* {$name} */");
         if ($ext === "php") {
           file_put_contents($file, str_replace("-name-", $name, $php));
+        } elseif ($ext === "md") {
+          file_put_contents($file, "## {$name}");
+        } else {
+          file_put_contents($file, "/* {$name} */");
         }
       }
       if ($ext !== "md")
         diySth_Build($file, $ext, $n);
     }
+    // 计数
     $n++;
   }
   // $zbp->SetHint("good", "操作成功[diySth]");
@@ -77,6 +85,8 @@ function diySth_Build($file, $ext, $i)
     $arrPHP = explode("\n// ----\n", file_get_contents($file));
     $contents = str_replace("// diy_Add_Filter", "// diy_Add_Filter\n" . $arrPHP[1], $contents);
     $contents = str_replace("// diy_Add_Function", "// diy_Add_Function\n" . $arrPHP[2], $contents);
+    // 加入注释以区分 bin 文件
+    $contents = preg_replace("/([;}])\n{2,}/", "$1\n\n// {$i} ${file}\n", $contents);
   } else {
     $contents .= file_get_contents($file);
     $contents .= "\n";
@@ -135,9 +145,11 @@ function InstallPlugin_diySth()
   if (!is_dir($dir)) {
     @mkdir($dir, 0755);
   }
+  // 2021-10-06 ↓
   if (!$zbp->HasConfig('diySth')) {
     file_put_contents(diySth_Path("usr/lock.ini"), "");
   }
+  // 2021-10-06 ↑
   if (!$zbp->HasConfig('diySth')) {
     $zbp->Config('diySth')->version = 1.1;
     $zbp->SaveConfig('diySth');
@@ -149,7 +161,7 @@ function InstallPlugin_diySth()
       file_put_contents($uFile, "");
     }
   }
-  diySth_Gen($dir);
+  diySth_Gen();
   $zbp->BuildTemplate();
 }
 function UninstallPlugin_diySth()
