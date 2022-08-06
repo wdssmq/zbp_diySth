@@ -8,9 +8,8 @@ if (is_file($diySth_FuncFile)) {
 function ActivePlugin_diySth()
 {
   Add_Filter_Plugin('Filter_Plugin_Zbp_BuildTemplate', 'diySth_BuildTemp');
-  // Add_Filter_Plugin('Filter_Plugin_Admin_Header', 'InstallPlugin_diySth');
-  if (function_exists("diy_Add_Filter_Plugin")) {
-    diy_Add_Filter_Plugin();
+  if (function_exists("diySth_ActiveUsrMod")) {
+    diySth_ActiveUsrMod();
   }
 }
 function diySth_BuildTemp(&$templates)
@@ -83,8 +82,8 @@ function diySth_Build($file, $ext, $i)
   }
   if ($ext === "php") {
     $arrPHP = explode("\n// ----\n", file_get_contents($file));
-    $contents = str_replace("// diy_Add_Filter", "// diy_Add_Filter\n" . $arrPHP[1], $contents);
-    $contents = str_replace("// diy_Add_Function", "// diy_Add_Function\n" . $arrPHP[2], $contents);
+    $contents = str_replace("// diySth_Add_Filter", "// diySth_Add_Filter\n" . $arrPHP[1], $contents);
+    $contents = str_replace("// diySth_Add_Function", "// diySth_Add_Function\n" . $arrPHP[2], $contents);
     // 加入注释以区分 bin 文件
     $contents = preg_replace("/([;}])\n{2,}/", "$1\n\n// {$i} ${file}\n", $contents);
   } else {

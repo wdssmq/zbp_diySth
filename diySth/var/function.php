@@ -1,8 +1,8 @@
 <?php
-function diy_Add_Filter_Plugin()
+function diySth_ActiveUsrMod()
 {
-  // diy_Add_Filter
+  // diySth_Add_Filter
 
 }
 // ----------------
-// diy_Add_Function
+// diySth_Add_Function
