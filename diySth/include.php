@@ -1,10 +1,14 @@
 <?php
-#注册插件
+// 注册插件
 RegisterPlugin("diySth", "ActivePlugin_diySth");
+
+// 判断文件是否存在并引入
 $diySth_FuncFile = __DIR__ . "/bin/function.php";
 if (is_file($diySth_FuncFile)) {
   require $diySth_FuncFile;
 }
+
+// 接口挂载
 function ActivePlugin_diySth()
 {
   Add_Filter_Plugin('Filter_Plugin_Zbp_BuildTemplate', 'diySth_BuildTemp');
@@ -12,11 +16,14 @@ function ActivePlugin_diySth()
     diySth_ActiveUsrMod();
   }
 }
+
+// 模板编译调用
 function diySth_BuildTemp(&$templates)
 {
   $templates['header'] = str_replace('{$header}', '{$header}  	<link rel="stylesheet" href="' . diySth_Path("b-css", "host") . '?v=2021100610" media="screen" />', $templates['header']);
   $templates['footer'] = str_replace('{$footer}', '{$footer}<script src="' . diySth_Path("b-js", "host") . '?v=2021100610"></script>', $templates['footer']);
 }
+
 // 遍历 usr 文件夹并生成内容
 function diySth_Gen()
 {
@@ -63,13 +70,17 @@ php;
   }
   // $zbp->SetHint("good", "操作成功[diySth]");
 }
+
 function diySth_Build($file, $ext, $i)
 {
   // 2021-10-06
+  global $zbp;
   $lock = diySth_Path("usr/lock.ini");
   if (!is_file($lock)) {
+    $zbp->SetHint("tips hint_always", "未放置 usr/lock.ini 文件，请放置后重试或联系作者");
     return;
   }
+  // 2021-10-06 ↑
   if ($ext === "php") {
     $rltFile = diySth_Path("b-fun");
   } else {
@@ -92,6 +103,7 @@ function diySth_Build($file, $ext, $i)
   }
   file_put_contents($rltFile, $contents);
 }
+
 function diySth_a($href, $title, $text = "")
 {
   if (empty($text)) {
@@ -99,6 +111,7 @@ function diySth_a($href, $title, $text = "")
   }
   return "<a href=\"{$href}\" title=\"{$title}\">$text</a>";
 }
+
 function diySth_Path($file, $t = 'path')
 {
   global $zbp;
@@ -132,6 +145,7 @@ function diySth_Path($file, $t = 'path')
       return $result . $file;
   }
 }
+
 function InstallPlugin_diySth()
 {
   global $zbp;
@@ -163,6 +177,7 @@ function InstallPlugin_diySth()
   diySth_Gen();
   $zbp->BuildTemplate();
 }
+
 function UninstallPlugin_diySth()
 {
 }
