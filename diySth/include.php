@@ -73,14 +73,6 @@ php;
 
 function diySth_Build($file, $ext, $i)
 {
-  // 2021-10-06
-  global $zbp;
-  $lock = diySth_Path("usr/lock.ini");
-  if (!is_file($lock)) {
-    $zbp->SetHint("tips hint_always", "未放置 usr/lock.ini 文件，请放置后重试或联系作者");
-    return;
-  }
-  // 2021-10-06 ↑
   if ($ext === "php") {
     $rltFile = diySth_Path("b-fun");
   } else {
