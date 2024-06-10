@@ -150,11 +150,7 @@ function InstallPlugin_diySth()
   if (!is_dir($dir)) {
     @mkdir($dir, 0755);
   }
-  // 2021-10-06 ↓
-  if (!$zbp->HasConfig('diySth')) {
-    file_put_contents(diySth_Path("usr/lock.ini"), "");
-  }
-  // 2021-10-06 ↑
+
   if (!$zbp->HasConfig('diySth')) {
     $zbp->Config('diySth')->version = 1.1;
     $zbp->SaveConfig('diySth');
