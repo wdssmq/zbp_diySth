@@ -71,6 +71,7 @@ php;
   // $zbp->SetHint("good", "操作成功[diySth]");
 }
 
+// 将拼接的内容写入 bin 文件
 function diySth_Build($file, $ext, $i)
 {
   if ($ext === "php") {
@@ -88,7 +89,7 @@ function diySth_Build($file, $ext, $i)
     $contents = str_replace("// diySth_Add_Filter", "// diySth_Add_Filter\n" . $arrPHP[1], $contents);
     $contents = str_replace("// diySth_Add_Function", "// diySth_Add_Function\n" . $arrPHP[2], $contents);
     // 加入注释以区分 bin 文件
-    $contents = preg_replace("/([;}])\n{2,}/", "$1\n\n// {$i} ${file}\n", $contents);
+    $contents = preg_replace("/([;}])\n{2,}/", "$1\n\n// {$i} {$file}\n", $contents);
   } else {
     $contents .= file_get_contents($file);
     $contents .= "\n";
