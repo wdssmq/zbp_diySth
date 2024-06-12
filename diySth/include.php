@@ -20,8 +20,8 @@ function ActivePlugin_diySth()
 // 模板编译调用
 function diySth_BuildTemp(&$templates)
 {
-  $templates['header'] = str_replace('{$header}', '{$header}  	<link rel="stylesheet" href="' . diySth_Path("b-css", "host") . '?v=2022080610" />', $templates['header']);
-  $templates['footer'] = str_replace('{$footer}', '{$footer}<script src="' . diySth_Path("b-js", "host") . '?v=2022080610"></script>', $templates['footer']);
+  $templates['header'] = str_replace('{$header}', '{$header}  	<link rel="stylesheet" href="' . diySth_Path("b-css", "host") . '?v=20240612102" />', $templates['header']);
+  $templates['footer'] = str_replace('{$footer}', '{$footer}<script src="' . diySth_Path("b-js", "host") . '?v=20240612102"></script>', $templates['footer']);
 }
 
 // 遍历 usr 文件夹并生成内容
