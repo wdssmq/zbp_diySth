@@ -28,7 +28,7 @@ function diySth_BuildTemp(&$templates)
 function diySth_Gen()
 {
   global $zbp;
-  $php = <<<php
+  $php = <<<PHP
 <?php
 // ----
 // -name-_Filter
@@ -36,7 +36,7 @@ function diySth_Gen()
 
 // ----
 // -name-_Function
-php;
+PHP;
   $dir = diySth_Path("usr");
   $subDirs = GetDirsInDir($dir);
   // 用于判断循环子级调用 diySth_Build() 是否首次执行
@@ -53,6 +53,7 @@ php;
     }
     foreach (array("php", "js", "css", "md") as $ext) {
       $file = "{$path}{$name}.{$ext}";
+      // 文件不存在则创建
       if (!is_file($file)) {
         if ($ext === "php") {
           file_put_contents($file, str_replace("-name-", $name, $php));
@@ -62,6 +63,7 @@ php;
           file_put_contents($file, "/* {$name} */");
         }
       }
+      // 拼接内容到 bin 文件
       if ($ext !== "md")
         diySth_Build($file, $ext, $n);
     }
@@ -89,7 +91,7 @@ function diySth_Build($file, $ext, $i)
     $contents = str_replace("// diySth_Add_Filter", "// diySth_Add_Filter\n" . $arrPHP[1], $contents);
     $contents = str_replace("// diySth_Add_Function", "// diySth_Add_Function\n" . $arrPHP[2], $contents);
     // 加入注释以区分 bin 文件
-    $contents = preg_replace("/([;}])\n{2,}/", "$1\n\n// {$i} {$file}\n", $contents);
+    // $contents = preg_replace("/([;}])\n{2,}/", "$1\n\n// {$i} {$file}\n", $contents);
   } else {
     $contents .= file_get_contents($file);
     $contents .= "\n";
